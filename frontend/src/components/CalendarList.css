@@ -1,0 +1,22 @@
+.calendar-list {
+    margin-bottom: 20px;
+  }
+  
+  .calendar-list ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .calendar-list li {
+    padding: 10px;
+    background-color: #f0f0f0;
+    margin-bottom: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-family: 'Arial', sans-serif;
+    color: #333;
+  }
+  
+  .calendar-list li:hover {
+    background-color: #e0e0e0;
+  }

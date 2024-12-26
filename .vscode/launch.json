@@ -1,0 +1,30 @@
+{
+    "configurations": [
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Launch Frontend Server",
+            "program": "${workspaceFolder}/frontend/node_modules/react-scripts/scripts/start.js",
+            "args": [
+                "start"
+            ],
+            "cwd": "${workspaceFolder}/frontend",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "env": {
+                "PORT": "3000"
+            },
+            "runtimeExecutable": "${workspaceFolder}/frontend/node_modules/.bin/react-scripts"
+        },  
+
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Launch Backend Server",
+            "program": "${workspaceFolder}/backend/server.js",
+            "cwd": "${workspaceFolder}/backend",
+            "internalConsoleOptions": "neverOpen"
+        }
+    ]
+}
