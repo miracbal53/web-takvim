@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import EventForm from './EventForm';
 import './EventList.css';
 
-const EventList = ({ calendarId, isAdmin }) => {
+const EventList = ({ calendarId, isAdmin, onEditEvent }) => {
   const [events, setEvents] = useState([]);
+  const [showAddEventForm, setShowAddEventForm] = useState(false);
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -14,8 +16,9 @@ const EventList = ({ calendarId, isAdmin }) => {
     fetchEvents();
   }, [calendarId]);
 
-  const handleEdit = (event) => {
-    // Düzenleme işlemi için gerekli kodları buraya ekleyin
+  const handleAddEvent = (newEvent) => {
+    setEvents([...events, newEvent]);
+    setShowAddEventForm(false);
   };
 
   return (
@@ -29,11 +32,21 @@ const EventList = ({ calendarId, isAdmin }) => {
             <span>{event.startDate ? new Date(event.startDate).toLocaleDateString() : 'N/A'}</span>
             <span>{event.endDate ? new Date(event.endDate).toLocaleDateString() : 'N/A'}</span>
             {isAdmin && (
-              <button onClick={() => handleEdit(event)}>Düzenle</button>
+              <button onClick={() => onEditEvent(event)}>Düzenle</button>
             )}
           </li>
         ))}
       </ul>
+      {isAdmin && (
+        <>
+          <button onClick={() => setShowAddEventForm(!showAddEventForm)}>
+            {showAddEventForm ? 'Formu Kapat' : 'Olay Ekle'}
+          </button>
+          {showAddEventForm && (
+            <EventForm calendarId={calendarId} onSubmit={handleAddEvent} onClose={() => setShowAddEventForm(false)} />
+          )}
+        </>
+      )}
     </div>
   );
 };

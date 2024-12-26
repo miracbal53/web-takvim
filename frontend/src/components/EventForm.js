@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './EventForm.css';
 
-const EventForm = ({ calendarId, onClose }) => {
+const EventForm = ({ calendarId, event, onClose, onSubmit }) => {
   const [formData, setFormData] = useState({
     name: '',
     semester: '',
@@ -11,11 +11,22 @@ const EventForm = ({ calendarId, onClose }) => {
   });
   const [message, setMessage] = useState('');
 
+  useEffect(() => {
+    if (event) {
+      setFormData({
+        name: event.name,
+        semester: event.semester,
+        startDate: event.startDate ? event.startDate.split('T')[0] : '',
+        endDate: event.endDate ? event.endDate.split('T')[0] : ''
+      });
+    }
+  }, [event]);
+
   const { name, semester, startDate, endDate } = formData;
 
   const onChange = e => setFormData({ ...formData, [e.target.name]: e.target.value });
 
-  const onSubmit = async e => {
+  const handleSubmit = async e => {
     e.preventDefault();
     try {
       const token = localStorage.getItem('token');
@@ -31,18 +42,25 @@ const EventForm = ({ calendarId, onClose }) => {
         endDate: endDate || startDate
       };
 
-      const res = await axios.post(`http://localhost:5000/api/events`, eventData, config);
-      setMessage('Olay başarıyla eklendi.');
-      console.log(res.data);
+      if (event) {
+        await axios.put(`http://localhost:5000/api/events/${event._id}`, eventData, config);
+        setMessage('Olay başarıyla güncellendi.');
+      } else {
+        await axios.post(`http://localhost:5000/api/events`, eventData, config);
+        setMessage('Olay başarıyla eklendi.');
+      }
+
+      onSubmit(eventData);
+      onClose();
     } catch (err) {
-      console.error('Olay eklenirken hata oluştu:', err);
-      setMessage('Olay eklenirken hata oluştu.');
+      console.error('Olay eklenirken/güncellenirken hata oluştu:', err);
+      setMessage('Olay eklenirken/güncellenirken hata oluştu.');
     }
   };
 
   return (
     <div className="event-form">
-      <form onSubmit={onSubmit}>
+      <form onSubmit={handleSubmit}>
         <div>
           <label>Olay Adı</label>
           <input type="text" name="name" value={name} onChange={onChange} required />
@@ -63,7 +81,7 @@ const EventForm = ({ calendarId, onClose }) => {
           <label>Bitiş Tarihi</label>
           <input type="date" name="endDate" value={endDate} onChange={onChange} />
         </div>
-        <button type="submit">Olay Ekle</button>
+        <button type="submit">Olay {event ? 'Güncelle' : 'Ekle'}</button>
         <button type="button" onClick={onClose}>Kapat</button>
         {message && <p>{message}</p>}
       </form>
