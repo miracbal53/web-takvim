@@ -1,0 +1,14 @@
+.custom-calendar .rbc-event {
+    font-size: 12px; /* Adjust the font size as needed */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .custom-calendar .rbc-event-label {
+    font-size: 12px; /* Adjust the font size as needed */
+  }
+  
+  .custom-calendar .rbc-event-content {
+    font-size: 12px; /* Adjust the font size as needed */
+  }

@@ -25,6 +25,7 @@ const CalendarForm = ({ onCalendarCreated, onClose }) => {
       const res = await axios.post('http://localhost:5000/api/calendars', formData, config);
       onCalendarCreated(res.data);
       setMessage('Takvim başarıyla oluşturuldu.');
+      onClose(); // Close the form after successful creation
     } catch (err) {
       console.error('Takvim oluşturulurken hata oluştu:', err);
       setMessage('Takvim oluşturulurken hata oluştu.');

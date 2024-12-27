@@ -42,6 +42,13 @@ const EventList = ({ calendarId, isAdmin, onEditEvent }) => {
     <div className="event-list">
       <h2>Olay Listesi</h2>
       <ul>
+        <li className="event-list-header">
+          <span>Akademik Olay</span>
+          <span>Yarıyıl</span>
+          <span>Başlangıç</span>
+          <span>Bitiş</span>
+          {isAdmin && <span>İşlemler</span>}
+        </li>
         {events.map(event => (
           <li key={event._id}>
             <span>{event.name}</span>
@@ -49,10 +56,10 @@ const EventList = ({ calendarId, isAdmin, onEditEvent }) => {
             <span>{event.startDate ? new Date(event.startDate).toLocaleDateString() : 'N/A'}</span>
             <span>{event.endDate ? new Date(event.endDate).toLocaleDateString() : 'N/A'}</span>
             {isAdmin && (
-              <>
+              <div className="button-group">
                 <button onClick={() => onEditEvent(event)}>Düzenle</button>
                 <button onClick={() => handleDeleteEvent(event._id)}>Sil</button>
-              </>
+              </div>
             )}
           </li>
         ))}

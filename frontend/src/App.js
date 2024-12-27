@@ -79,6 +79,11 @@ const App = () => {
     setEditingEvent(event);
   };
 
+  const handleCalendarCreated = calendar => {
+    setSelectedCalendar(calendar);
+    setShowCalendarForm(false);
+  };
+
   return (
     <Router>
       <div className="App">
@@ -103,7 +108,7 @@ const App = () => {
               Takvim Ekle
             </button>
           )}
-          {showCalendarForm && <CalendarForm onSubmit={() => setShowCalendarForm(false)} />}
+          {showCalendarForm && <CalendarForm onCalendarCreated={handleCalendarCreated} onClose={() => setShowCalendarForm(false)} />}
           {selectedCalendar && (
             <>
               <h2>{selectedCalendar.name} ({selectedCalendar.year.start} - {selectedCalendar.year.end})</h2> {/* Seçilen takvimin adını ve yılını göster */}

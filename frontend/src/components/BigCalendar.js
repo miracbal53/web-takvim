@@ -3,6 +3,7 @@ import { Calendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
 import axios from 'axios';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
+import './BigCalendar.css'; // Import the new CSS file
 
 const localizer = momentLocalizer(moment);
 
@@ -14,12 +15,35 @@ const BigCalendar = ({ calendarId, defaultDate }) => {
     const fetchEvents = async () => {
       try {
         const res = await axios.get(`http://localhost:5000/api/events?calendarId=${calendarId}`);
-        const formattedEvents = res.data.map(event => ({
-          id: event._id,
-          title: `${event.semester} İçin ${event.name}`,
-          start: new Date(event.startDate),
-          end: new Date(event.endDate || event.startDate)
-        }));
+        const formattedEvents = res.data.flatMap(event => {
+          const startDate = new Date(event.startDate);
+          const endDate = new Date(event.endDate || event.startDate);
+          if (startDate.getTime() === endDate.getTime()) {
+            return [
+              {
+                id: `${event._id}-single`,
+                title: `${event.semester} - ${event.name}`,
+                start: startDate,
+                end: startDate
+              }
+            ];
+          } else {
+            return [
+              {
+                id: `${event._id}-start`,
+                title: `${event.semester} - ${event.name} Başlangıç`,
+                start: startDate,
+                end: startDate
+              },
+              {
+                id: `${event._id}-end`,
+                title: `${event.semester} - ${event.name} Bitiş`,
+                start: endDate,
+                end: endDate
+              }
+            ];
+          }
+        });
         setEvents(formattedEvents);
       } catch (err) {
         console.error('Etkinlikler getirilirken hata oluştu:', err);
@@ -50,8 +74,8 @@ const BigCalendar = ({ calendarId, defaultDate }) => {
               'x-auth-token': token
             }
           };
-          await axios.delete(`http://localhost:5000/api/events/${event.id}`, config);
-          setEvents(events.filter(e => e.id !== event.id));
+          await axios.delete(`http://localhost:5000/api/events/${event.id.split('-')[0]}`, config);
+          setEvents(events.filter(e => e.id.split('-')[0] !== event.id.split('-')[0]));
         } catch (err) {
           console.error('Olay silinirken hata oluştu:', err);
         }
@@ -71,6 +95,7 @@ const BigCalendar = ({ calendarId, defaultDate }) => {
         selectable={isAdmin}
         onSelectEvent={handleSelectEvent}
         defaultDate={defaultDate}
+        className="custom-calendar" // Add a custom class name
       />
     </div>
   );
