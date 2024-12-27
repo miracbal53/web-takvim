@@ -15,6 +15,7 @@ const App = () => {
   const [selectedCalendar, setSelectedCalendar] = useState(null);
   const [showCalendarForm, setShowCalendarForm] = useState(false);
   const [editingEvent, setEditingEvent] = useState(null);
+  const [events, setEvents] = useState([]);
 
   const checkTokenExpiration = () => {
     const token = localStorage.getItem('token');
@@ -84,6 +85,11 @@ const App = () => {
     setShowCalendarForm(false);
   };
 
+  const handleEventUpdated = updatedEvent => {
+    setEvents(events.map(event => (event._id === updatedEvent._id ? updatedEvent : event)));
+    setEditingEvent(null);
+  };
+
   return (
     <Router>
       <div className="App">
@@ -117,7 +123,7 @@ const App = () => {
               {editingEvent && (
                 <div className="event-form">
                   <h2>Olay Düzenleme</h2>
-                  <EventForm calendarId={selectedCalendar._id} event={editingEvent} onSubmit={() => setEditingEvent(null)} onClose={() => setEditingEvent(null)} />
+                  <EventForm calendarId={selectedCalendar._id} event={editingEvent} onSubmit={handleEventUpdated} onClose={() => setEditingEvent(null)} />
                 </div>
               )}
             </>

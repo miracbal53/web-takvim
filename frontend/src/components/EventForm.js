@@ -43,15 +43,19 @@ const EventForm = ({ calendarId, event, onClose, onSubmit }) => {
       };
   
       if (event) {
-        await axios.put(`http://localhost:5000/api/events/${event._id}`, eventData, config);
+        const res = await axios.put(`http://localhost:5000/api/events/${event._id}`, eventData, config);
         setMessage('Olay başarıyla güncellendi.');
+        onSubmit(res.data);
       } else {
-        await axios.post(`http://localhost:5000/api/events`, eventData, config);
+        const res = await axios.post(`http://localhost:5000/api/events`, eventData, config);
         setMessage('Olay başarıyla eklendi.');
+        onSubmit(res.data);
       }
   
-      onSubmit(eventData);
-      onClose();
+      setTimeout(() => {
+        setMessage('');
+        onClose();
+      }, 2000);
     } catch (err) {
       console.error('Olay eklenirken/güncellenirken hata oluştu:', err);
       setMessage('Olay eklenirken/güncellenirken hata oluştu.');

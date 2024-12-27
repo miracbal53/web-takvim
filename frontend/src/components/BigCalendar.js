@@ -10,6 +10,7 @@ const localizer = momentLocalizer(moment);
 const BigCalendar = ({ calendarId, defaultDate }) => {
   const [events, setEvents] = useState([]);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [message, setMessage] = useState('');
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -31,13 +32,13 @@ const BigCalendar = ({ calendarId, defaultDate }) => {
             return [
               {
                 id: `${event._id}-start`,
-                title: `${event.semester} - ${event.name} Başlangıç`,
+                title: `${event.semester} - ${event.name} - Başlangıç`,
                 start: startDate,
                 end: startDate
               },
               {
                 id: `${event._id}-end`,
-                title: `${event.semester} - ${event.name} Bitiş`,
+                title: `${event.semester} - ${event.name} - Bitiş`,
                 start: endDate,
                 end: endDate
               }
@@ -76,6 +77,11 @@ const BigCalendar = ({ calendarId, defaultDate }) => {
           };
           await axios.delete(`http://localhost:5000/api/events/${event.id.split('-')[0]}`, config);
           setEvents(events.filter(e => e.id.split('-')[0] !== event.id.split('-')[0]));
+          setMessage('Olay başarıyla silindi.');
+          setTimeout(() => {
+            setMessage('');
+            window.location.reload();
+          }, 2000);
         } catch (err) {
           console.error('Olay silinirken hata oluştu:', err);
         }
@@ -86,6 +92,7 @@ const BigCalendar = ({ calendarId, defaultDate }) => {
   return (
     <div>
       <h2>Takvim</h2>
+      {message && <p>{message}</p>}
       <Calendar
         localizer={localizer}
         events={events}
