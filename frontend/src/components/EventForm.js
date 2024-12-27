@@ -35,13 +35,13 @@ const EventForm = ({ calendarId, event, onClose, onSubmit }) => {
           'x-auth-token': token
         }
       };
-
+  
       const eventData = {
         ...formData,
         calendarId,
         endDate: endDate || startDate
       };
-
+  
       if (event) {
         await axios.put(`http://localhost:5000/api/events/${event._id}`, eventData, config);
         setMessage('Olay başarıyla güncellendi.');
@@ -49,7 +49,7 @@ const EventForm = ({ calendarId, event, onClose, onSubmit }) => {
         await axios.post(`http://localhost:5000/api/events`, eventData, config);
         setMessage('Olay başarıyla eklendi.');
       }
-
+  
       onSubmit(eventData);
       onClose();
     } catch (err) {

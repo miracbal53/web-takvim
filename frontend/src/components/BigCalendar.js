@@ -6,7 +6,7 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
 
 const localizer = momentLocalizer(moment);
 
-const BigCalendar = ({ calendarId }) => {
+const BigCalendar = ({ calendarId, defaultDate }) => {
   const [events, setEvents] = useState([]);
   const [isAdmin, setIsAdmin] = useState(false);
 
@@ -70,6 +70,7 @@ const BigCalendar = ({ calendarId }) => {
         style={{ height: 500 }}
         selectable={isAdmin}
         onSelectEvent={handleSelectEvent}
+        defaultDate={defaultDate}
       />
     </div>
   );

@@ -21,6 +21,23 @@ const EventList = ({ calendarId, isAdmin, onEditEvent }) => {
     setShowAddEventForm(false);
   };
 
+  const handleDeleteEvent = async (eventId) => {
+    if (window.confirm('Bu olayı silmek istediğinize emin misiniz?')) {
+      try {
+        const token = localStorage.getItem('token');
+        const config = {
+          headers: {
+            'x-auth-token': token
+          }
+        };
+        await axios.delete(`http://localhost:5000/api/events/${eventId}`, config);
+        setEvents(events.filter(event => event._id !== eventId));
+      } catch (err) {
+        console.error('Olay silinirken hata oluştu:', err);
+      }
+    }
+  };
+
   return (
     <div className="event-list">
       <h2>Olay Listesi</h2>
@@ -32,7 +49,10 @@ const EventList = ({ calendarId, isAdmin, onEditEvent }) => {
             <span>{event.startDate ? new Date(event.startDate).toLocaleDateString() : 'N/A'}</span>
             <span>{event.endDate ? new Date(event.endDate).toLocaleDateString() : 'N/A'}</span>
             {isAdmin && (
-              <button onClick={() => onEditEvent(event)}>Düzenle</button>
+              <>
+                <button onClick={() => onEditEvent(event)}>Düzenle</button>
+                <button onClick={() => handleDeleteEvent(event._id)}>Sil</button>
+              </>
             )}
           </li>
         ))}

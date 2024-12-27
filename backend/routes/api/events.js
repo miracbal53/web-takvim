@@ -47,39 +47,6 @@ router.post(
   }
 );
 
-// @route   GET api/events
-// @desc    Get all events for a calendar
-// @access  Public
-router.get('/', async (req, res) => {
-  const { calendarId } = req.query;
-  try {
-    const events = await Event.find({ calendarId });
-    res.json(events);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Server Error');
-  }
-});
-
-// @route   DELETE api/events/:id
-// @desc    Delete an event
-// @access  Private (Admin only)
-router.delete('/:id', [auth, admin], async (req, res) => {
-  try {
-    const event = await Event.findById(req.params.id);
-
-    if (!event) {
-      return res.status(404).json({ msg: 'Event not found' });
-    }
-
-    await event.remove();
-    res.json({ msg: 'Event removed' });
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Server Error');
-  }
-});
-
 // @route   PUT api/events/:id
 // @desc    Update an event
 // @access  Private (Admin only)
@@ -108,6 +75,41 @@ router.put('/:id', [auth, admin], async (req, res) => {
     res.json(event);
   } catch (err) {
     console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
+// @route   GET api/events
+// @desc    Get events by calendarId
+// @access  Public
+router.get('/', async (req, res) => {
+  const { calendarId } = req.query;
+
+  try {
+    const events = await Event.find({ calendarId });
+    res.json(events);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
+// @route   DELETE api/events/:id
+// @desc    Delete an event
+// @access  Private (Admin only)
+router.delete('/:id', [auth, admin], async (req, res) => {
+  try {
+    const event = await Event.findById(req.params.id);
+
+    if (!event) {
+      return res.status(404).json({ msg: 'Event not found' });
+    }
+
+    await Event.findByIdAndDelete(req.params.id);
+
+    res.json({ msg: 'Event removed' });
+  } catch (err) {
+    console.error('Error deleting event:', err.message);
     res.status(500).send('Server Error');
   }
 });
