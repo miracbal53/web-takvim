@@ -51,4 +51,23 @@ router.get('/', async (req, res) => {
   }
 });
 
+// @route   GET api/calendars/:id
+// @desc    Get calendar by ID
+// @access  Public
+router.get('/:id', async (req, res) => {
+  try {
+    const calendar = await Calendar.findById(req.params.id);
+    if (!calendar) {
+      return res.status(404).json({ msg: 'Calendar not found' });
+    }
+    res.json(calendar);
+  } catch (err) {
+    console.error(err.message);
+    if (err.kind === 'ObjectId') {
+      return res.status(404).json({ msg: 'Calendar not found' });
+    }
+    res.status(500).send('Server Error');
+  }
+});
+
 module.exports = router;

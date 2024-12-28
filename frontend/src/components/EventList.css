@@ -46,3 +46,10 @@
 .event-list button:hover {
   background-color: #21a1f1;
 }
+
+.past-event-label {
+  display: block;
+  font-size: 0.9em;
+  color: #ff0000;
+  margin-top: 5px;
+}
