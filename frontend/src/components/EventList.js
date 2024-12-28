@@ -1,35 +1,39 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import EventForm from './EventForm';
-import { createEvents } from 'ics';
-import './EventList.css';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import EventForm from "./EventForm";
+import { createEvents } from "ics";
+import "./EventList.css";
 
 const EventList = ({ calendarId, isAdmin, onEditEvent }) => {
   const [events, setEvents] = useState([]);
   const [showAddEventForm, setShowAddEventForm] = useState(false);
-  const [message, setMessage] = useState('');
-  const [sortOption, setSortOption] = useState('dateAdded');
-  const [searchTerm, setSearchTerm] = useState('');
-  const [calendarName, setCalendarName] = useState('');
-  const [calendarYears, setCalendarYears] = useState({ start: '', end: '' });
+  const [message, setMessage] = useState("");
+  const [sortOption, setSortOption] = useState("dateAdded");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [calendarName, setCalendarName] = useState("");
+  const [calendarYears, setCalendarYears] = useState({ start: "", end: "" });
 
   useEffect(() => {
     const fetchEvents = async () => {
-      const res = await axios.get(`http://localhost:5000/api/events?calendarId=${calendarId}`);
+      const res = await axios.get(
+        `http://localhost:5000/api/events?calendarId=${calendarId}`
+      );
       setEvents(res.data);
     };
 
     const fetchCalendarName = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/calendars/${calendarId}`);
+        const res = await axios.get(
+          `http://localhost:5000/api/calendars/${calendarId}`
+        );
         setCalendarName(res.data.name);
         setCalendarYears(res.data.year);
       } catch (error) {
-        console.error('Takvim adı alınırken hata oluştu:', error);
+        console.error("Takvim adı alınırken hata oluştu:", error);
         if (error.response && error.response.status === 404) {
-          setCalendarName('Takvim Bulunamadı');
+          setCalendarName("Takvim Bulunamadı");
         } else {
-          setCalendarName('Takvim');
+          setCalendarName("Takvim");
         }
       }
     };
@@ -44,23 +48,26 @@ const EventList = ({ calendarId, isAdmin, onEditEvent }) => {
   };
 
   const handleDeleteEvent = async (eventId) => {
-    if (window.confirm('Bu olayı silmek istediğinize emin misiniz?')) {
+    if (window.confirm("Bu olayı silmek istediğinize emin misiniz?")) {
       try {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem("token");
         const config = {
           headers: {
-            'x-auth-token': token
-          }
+            "x-auth-token": token,
+          },
         };
-        await axios.delete(`http://localhost:5000/api/events/${eventId}`, config);
-        setEvents(events.filter(event => event._id !== eventId));
-        setMessage('Olay başarıyla silindi.');
+        await axios.delete(
+          `http://localhost:5000/api/events/${eventId}`,
+          config
+        );
+        setEvents(events.filter((event) => event._id !== eventId));
+        setMessage("Olay başarıyla silindi.");
         setTimeout(() => {
-          setMessage('');
+          setMessage("");
         }, 2000);
       } catch (err) {
-        console.error('Olay silinirken hata oluştu:', err);
-        setMessage('Olay silinirken hata oluştu.');
+        console.error("Olay silinirken hata oluştu:", err);
+        setMessage("Olay silinirken hata oluştu.");
       }
     }
   };
@@ -74,12 +81,14 @@ const EventList = ({ calendarId, isAdmin, onEditEvent }) => {
   };
 
   const sortedEvents = events
-    .filter(event => event.name.toLowerCase().includes(searchTerm.toLowerCase()))
+    .filter((event) =>
+      event.name.toLowerCase().includes(searchTerm.toLowerCase())
+    )
     .sort((a, b) => {
       const now = new Date();
-      if (sortOption === 'dateAdded') {
+      if (sortOption === "dateAdded") {
         return new Date(a.date) - new Date(b.date);
-      } else if (sortOption === 'endDate') {
+      } else if (sortOption === "endDate") {
         const endDateA = new Date(a.endDate || a.startDate);
         const endDateB = new Date(b.endDate || b.startDate);
         if (endDateA < now && endDateB < now) {
@@ -91,15 +100,15 @@ const EventList = ({ calendarId, isAdmin, onEditEvent }) => {
         } else {
           return endDateA - endDateB; // Both events are in the future, sort by nearest future event
         }
-      } else if (sortOption === 'pastEvents') {
+      } else if (sortOption === "pastEvents") {
         const endDateA = new Date(a.endDate || a.startDate);
         const endDateB = new Date(b.endDate || b.startDate);
         return endDateB - endDateA; // Sort past events by most recent past event
       }
       return 0;
     })
-    .filter(event => {
-      if (sortOption === 'pastEvents') {
+    .filter((event) => {
+      if (sortOption === "pastEvents") {
         const now = new Date();
         const endDate = new Date(event.endDate || event.startDate);
         return endDate < now; // Only show past events
@@ -108,21 +117,33 @@ const EventList = ({ calendarId, isAdmin, onEditEvent }) => {
     });
 
   const downloadICS = () => {
-    const icsEvents = events.map(event => ({
+    const icsEvents = events.map((event) => ({
       title: event.name,
-      start: [new Date(event.startDate).getFullYear(), new Date(event.startDate).getMonth() + 1, new Date(event.startDate).getDate()],
-      end: [new Date(event.endDate || event.startDate).getFullYear(), new Date(event.endDate || event.startDate).getMonth() + 1, new Date(event.endDate || event.startDate).getDate()],
+      start: [
+        new Date(event.startDate).getFullYear(),
+        new Date(event.startDate).getMonth() + 1,
+        new Date(event.startDate).getDate(),
+      ],
+      end: [
+        new Date(event.endDate || event.startDate).getFullYear(),
+        new Date(event.endDate || event.startDate).getMonth() + 1,
+        new Date(event.endDate || event.startDate).getDate(),
+      ],
       description: event.semester,
     }));
+
     createEvents(icsEvents, (error, value) => {
       if (error) {
         console.error(error);
         return;
       }
-      const blob = new Blob([value], { type: 'text/calendar;charset=utf-8;' });
-      const link = document.createElement('a');
+      const blob = new Blob([value], { type: "text/calendar;charset=utf-8;" });
+      const link = document.createElement("a");
       link.href = URL.createObjectURL(blob);
-      link.setAttribute('download', `${calendarName} (${calendarYears.start}-${calendarYears.end}).ics`);
+      link.setAttribute(
+        "download",
+        `${calendarName} (${calendarYears.start}-${calendarYears.end}).ics`
+      );
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -130,10 +151,18 @@ const EventList = ({ calendarId, isAdmin, onEditEvent }) => {
   };
 
   const downloadVCS = () => {
-    const vcsEvents = events.map(event => ({
+    const vcsEvents = events.map((event) => ({
       title: event.name,
-      start: [new Date(event.startDate).getFullYear(), new Date(event.startDate).getMonth() + 1, new Date(event.startDate).getDate()],
-      end: [new Date(event.endDate || event.startDate).getFullYear(), new Date(event.endDate || event.startDate).getMonth() + 1, new Date(event.endDate || event.startDate).getDate()],
+      start: [
+        new Date(event.startDate).getFullYear(),
+        new Date(event.startDate).getMonth() + 1,
+        new Date(event.startDate).getDate(),
+      ],
+      end: [
+        new Date(event.endDate || event.startDate).getFullYear(),
+        new Date(event.endDate || event.startDate).getMonth() + 1,
+        new Date(event.endDate || event.startDate).getDate(),
+      ],
       description: `${calendarName} - ${event.semester}`,
     }));
     createEvents(vcsEvents, (error, value) => {
@@ -141,10 +170,15 @@ const EventList = ({ calendarId, isAdmin, onEditEvent }) => {
         console.error(error);
         return;
       }
-      const blob = new Blob([value], { type: 'text/x-vcalendar;charset=utf-8;' });
-      const link = document.createElement('a');
+      const blob = new Blob([value], {
+        type: "text/x-vcalendar;charset=utf-8;",
+      });
+      const link = document.createElement("a");
       link.href = URL.createObjectURL(blob);
-      link.setAttribute('download', `${calendarName} (${calendarYears.start}-${calendarYears.end}).vcs`);
+      link.setAttribute(
+        "download",
+        `${calendarName} (${calendarYears.start}-${calendarYears.end}).vcs`
+      );
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -166,10 +200,17 @@ const EventList = ({ calendarId, isAdmin, onEditEvent }) => {
         </label>
         <label>
           Ara:
-          <input type="text" value={searchTerm} onChange={handleSearchChange} placeholder="Olay adına göre ara" />
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={handleSearchChange}
+            placeholder="Olay adına göre ara"
+          />
         </label>
-        <button onClick={downloadICS}>ICS İndir</button>
-        <button onClick={downloadVCS}>VCS İndir</button>
+        
+          <button onClick={downloadICS}>ICS İndir</button>
+          <button onClick={downloadVCS}>VCS İndir</button>
+        
       </div>
       <ul>
         <li className="event-list-header">
@@ -179,23 +220,33 @@ const EventList = ({ calendarId, isAdmin, onEditEvent }) => {
           <span>Bitiş</span>
           {isAdmin && <span>İşlemler</span>}
         </li>
-        {sortedEvents.map(event => {
+        {sortedEvents.map((event) => {
           const now = new Date();
           const endDate = new Date(event.endDate || event.startDate);
           const isPastEvent = endDate < now;
           return (
-            <li key={event._id} className={isPastEvent ? 'past-event' : ''}>
+            <li key={event._id} className={isPastEvent ? "past-event" : ""}>
               <span>{event.name}</span>
               <span>{event.semester}</span>
-              <span>{event.startDate ? new Date(event.startDate).toLocaleDateString() : 'N/A'}</span>
               <span>
-                {event.endDate ? new Date(event.endDate).toLocaleDateString() : 'N/A'}
-                {isPastEvent && <span className="past-event-label">(Son Tarihi Geçti)</span>}
+                {event.startDate
+                  ? new Date(event.startDate).toLocaleDateString()
+                  : "N/A"}
+              </span>
+              <span>
+                {event.endDate
+                  ? new Date(event.endDate).toLocaleDateString()
+                  : "N/A"}
+                {isPastEvent && (
+                  <span className="past-event-label">(Son Tarihi Geçti)</span>
+                )}
               </span>
               {isAdmin && (
                 <div className="button-group">
                   <button onClick={() => onEditEvent(event)}>Düzenle</button>
-                  <button onClick={() => handleDeleteEvent(event._id)}>Sil</button>
+                  <button onClick={() => handleDeleteEvent(event._id)}>
+                    Sil
+                  </button>
                 </div>
               )}
             </li>
@@ -205,10 +256,14 @@ const EventList = ({ calendarId, isAdmin, onEditEvent }) => {
       {isAdmin && (
         <>
           <button onClick={() => setShowAddEventForm(!showAddEventForm)}>
-            {showAddEventForm ? 'Formu Kapat' : 'Olay Ekle'}
+            {showAddEventForm ? "Formu Kapat" : "Olay Ekle"}
           </button>
           {showAddEventForm && (
-            <EventForm calendarId={calendarId} onSubmit={handleAddEvent} onClose={() => setShowAddEventForm(false)} />
+            <EventForm
+              calendarId={calendarId}
+              onSubmit={handleAddEvent}
+              onClose={() => setShowAddEventForm(false)}
+            />
           )}
         </>
       )}

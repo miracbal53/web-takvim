@@ -1,5 +1,9 @@
+/* Olay Listesi Stilleri */
 .event-list {
-  margin-top: 20px;
+  margin-top: 50px;
+}
+.event-list h2 {
+  color: #0f77d1;
 }
 
 .event-list ul {
@@ -30,21 +34,25 @@
 .event-list li .button-group {
   display: flex;
   flex-direction: column;
+  
 }
 
 .event-list li button {
   margin: 5px 0;
+  
 }
 
 .event-list button {
   padding: 5px 10px;
-  background-color: #61dafb;
+  background-color: #0f77d1;
   border: none;
   cursor: pointer;
+  
 }
 
 .event-list button:hover {
   background-color: #21a1f1;
+  transform: scale(1.05);
 }
 
 .past-event-label {
@@ -52,4 +60,113 @@
   font-size: 0.9em;
   color: #ff0000;
   margin-top: 5px;
+}
+
+/* Kontroller Stilleri */
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  padding: 20px 40px 20px 40px;
+
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.controls label {
+  display: flex;
+  flex-direction: column;
+  font-size: 1rem;
+  color: #555;
+  gap: 10px;
+}
+
+.controls select,
+.controls input {
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: #fff;
+  
+}
+
+.controls select:focus,
+.controls input:focus {
+  border-color: #21a1f1;
+  box-shadow: 0 0 5px rgba(97, 218, 251, 0.6);
+  outline: none;
+}
+
+.controls button {
+  padding: 5px 10px;
+  font-size: 1rem;
+  color: #fff;
+  background-color: #0f77d1;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s, box-shadow 0.2s;
+}
+
+.controls button:hover {
+  background-color: #21a1f1;
+  transform: scale(1.05);
+  box-shadow: 0 3px 6px rgba(33, 161, 241, 0.4);
+}
+
+.controls button:active {
+  transform: scale(0.98);
+  box-shadow: 0 2px 4px rgba(33, 161, 241, 0.3);
+}
+.control-button {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 10px 100px 10px 100px;
+  padding: 20px 0;
+}
+
+/* Responsive Tasarım */
+@media (max-width: 600px) {
+  .App-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .App-header .admin-button {
+    font-size: 0.9rem;
+    padding: 0.4rem 0.8rem;
+    transition: background-color 0.3s, transform 0.2s;
+  }
+
+  main {
+    padding: 1rem;
+  }
+
+  h2 {
+    font-size: 1.3rem;
+  }
+
+  .event-list li,
+  .event-list-header {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
+  .controls {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .controls label {
+    width: 100%;
+  }
+
+  .controls select,
+  .controls input {
+    width: 100%;
+  }
 }

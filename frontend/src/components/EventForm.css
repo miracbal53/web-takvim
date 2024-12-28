@@ -1,39 +1,91 @@
 .event-form {
-    background-color: #fff;
-    padding: 20px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    max-width: 400px;
-    margin: 20px auto;
-  }
-  
-  .event-form form div {
-    margin-bottom: 10px;
-  }
-  
-  .event-form form label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
-  }
-  
-  .event-form form input, .event-form form select {
-    width: 100%;
-    padding: 8px;
-    box-sizing: border-box;
-    border: 1px solid #ddd;
-    border-radius: 3px;
-  }
-  
-  .event-form button {
-    padding: 10px 20px;
-    background-color: #61dafb;
-    border: none;
-    cursor: pointer;
-    margin-right: 10px;
-  }
-  
-  .event-form button:hover {
-    background-color: #21a1f1;
-  }
+  background-color: #ffffff;
+  padding: 20px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  max-width: 450px;
+  margin: 20px auto; /* Ortalamak için */
+  font-family: 'Arial', sans-serif;
+}
+
+.event-form h2 {
+  margin-bottom: 15px;
+  font-size: 1.5rem;
+  color: #0f77d1;
+  text-align: center;
+}
+
+.event-form form div {
+  margin-bottom: 15px;
+}
+
+.event-form form label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #555;
+}
+
+.event-form form input,
+.event-form form select {
+  width: 100%;
+  padding: 10px;
+  font-size: 1rem;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.event-form form input:focus,
+.event-form form select:focus {
+  border-color: #0e8dd1;
+  box-shadow: 0 0 5px rgba(14, 141, 209, 0.5);
+  outline: none;
+}
+.control-button {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 20px 110px 20px 110px;
+  padding: 10px 0;
+}
+
+.event-form button {
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.event-form button[type="submit"] {
+  background-color: #0f77d1;
+  color: #ffffff;
+}
+
+.event-form button[type="submit"]:hover {
+  background-color: #21a1f1;
+  transform: scale(1.05);
+}
+
+.event-form button[type="button"] {
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+.event-form button[type="button"]:hover {
+  background-color: #e0e0e0;
+  transform: scale(1.05);
+}
+
+.event-form p {
+  margin-top: 15px;
+  font-size: 0.9rem;
+  color: #0e8dd1;
+  text-align: center;
+}

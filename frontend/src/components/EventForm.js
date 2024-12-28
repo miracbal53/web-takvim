@@ -1,64 +1,73 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import './EventForm.css';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import "./EventForm.css";
 
 const EventForm = ({ calendarId, event, onClose, onSubmit }) => {
   const [formData, setFormData] = useState({
-    name: '',
-    semester: '',
-    startDate: '',
-    endDate: ''
+    name: "",
+    semester: "",
+    startDate: "",
+    endDate: "",
   });
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
     if (event) {
       setFormData({
         name: event.name,
         semester: event.semester,
-        startDate: event.startDate ? event.startDate.split('T')[0] : '',
-        endDate: event.endDate ? event.endDate.split('T')[0] : ''
+        startDate: event.startDate ? event.startDate.split("T")[0] : "",
+        endDate: event.endDate ? event.endDate.split("T")[0] : "",
       });
     }
   }, [event]);
 
   const { name, semester, startDate, endDate } = formData;
 
-  const onChange = e => setFormData({ ...formData, [e.target.name]: e.target.value });
+  const onChange = (e) =>
+    setFormData({ ...formData, [e.target.name]: e.target.value });
 
-  const handleSubmit = async e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
       const config = {
         headers: {
-          'x-auth-token': token
-        }
+          "x-auth-token": token,
+        },
       };
-  
+
       const eventData = {
         ...formData,
         calendarId,
-        endDate: endDate || startDate
+        endDate: endDate || startDate,
       };
-  
+
       if (event) {
-        const res = await axios.put(`http://localhost:5000/api/events/${event._id}`, eventData, config);
-        setMessage('Olay başarıyla güncellendi.');
+        const res = await axios.put(
+          `http://localhost:5000/api/events/${event._id}`,
+          eventData,
+          config
+        );
+        setMessage("Olay başarıyla güncellendi.");
         onSubmit(res.data);
       } else {
-        const res = await axios.post(`http://localhost:5000/api/events`, eventData, config);
-        setMessage('Olay başarıyla eklendi.');
+        const res = await axios.post(
+          `http://localhost:5000/api/events`,
+          eventData,
+          config
+        );
+        setMessage("Olay başarıyla eklendi.");
         onSubmit(res.data);
       }
-  
+
       setTimeout(() => {
-        setMessage('');
+        setMessage("");
         onClose();
       }, 2000);
     } catch (err) {
-      console.error('Olay eklenirken/güncellenirken hata oluştu:', err);
-      setMessage('Olay eklenirken/güncellenirken hata oluştu.');
+      console.error("Olay eklenirken/güncellenirken hata oluştu:", err);
+      setMessage("Olay eklenirken/güncellenirken hata oluştu.");
     }
   };
 
@@ -66,9 +75,16 @@ const EventForm = ({ calendarId, event, onClose, onSubmit }) => {
     <div className="event-form">
       <form onSubmit={handleSubmit}>
         <div>
-          <label>Olay Adı</label>
-          <input type="text" name="name" value={name} onChange={onChange} required />
+          <label>Akademik Olay Adı</label>
+          <input
+            type="text"
+            name="name"
+            value={name}
+            onChange={onChange}
+            required
+          />
         </div>
+
         <div>
           <label>Yarıyıl</label>
           <select name="semester" value={semester} onChange={onChange} required>
@@ -77,16 +93,35 @@ const EventForm = ({ calendarId, event, onClose, onSubmit }) => {
             <option value="Bahar Yarıyılı">Bahar Yarıyılı</option>
           </select>
         </div>
+
         <div>
           <label>Başlangıç Tarihi</label>
-          <input type="date" name="startDate" value={startDate} onChange={onChange} required />
+          <input
+            type="date"
+            name="startDate"
+            value={startDate}
+            onChange={onChange}
+            required
+          />
         </div>
+
         <div>
           <label>Bitiş Tarihi</label>
-          <input type="date" name="endDate" value={endDate} onChange={onChange} />
+          <input
+            type="date"
+            name="endDate"
+            value={endDate}
+            onChange={onChange}
+          />
         </div>
-        <button type="submit">Olay {event ? 'Güncelle' : 'Ekle'}</button>
-        <button type="button" onClick={onClose}>Kapat</button>
+
+        <div className="control-button">
+          <button type="submit"> {event ? "Güncelle" : "Ekle"}</button>
+          <button type="button" onClick={onClose}>
+            Kapat
+          </button>
+        </div>
+
         {message && <p>{message}</p>}
       </form>
     </div>
