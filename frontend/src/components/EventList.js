@@ -11,6 +11,7 @@ const EventList = ({ calendarId, isAdmin, onEditEvent }) => {
   const [sortOption, setSortOption] = useState('dateAdded');
   const [searchTerm, setSearchTerm] = useState('');
   const [calendarName, setCalendarName] = useState('');
+  const [calendarYears, setCalendarYears] = useState({ start: '', end: '' });
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -22,6 +23,7 @@ const EventList = ({ calendarId, isAdmin, onEditEvent }) => {
       try {
         const res = await axios.get(`http://localhost:5000/api/calendars/${calendarId}`);
         setCalendarName(res.data.name);
+        setCalendarYears(res.data.year);
       } catch (error) {
         console.error('Takvim adı alınırken hata oluştu:', error);
         if (error.response && error.response.status === 404) {
@@ -120,7 +122,7 @@ const EventList = ({ calendarId, isAdmin, onEditEvent }) => {
       const blob = new Blob([value], { type: 'text/calendar;charset=utf-8;' });
       const link = document.createElement('a');
       link.href = URL.createObjectURL(blob);
-      link.setAttribute('download', `${calendarName}.ics`);
+      link.setAttribute('download', `${calendarName} (${calendarYears.start}-${calendarYears.end}).ics`);
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -142,7 +144,7 @@ const EventList = ({ calendarId, isAdmin, onEditEvent }) => {
       const blob = new Blob([value], { type: 'text/x-vcalendar;charset=utf-8;' });
       const link = document.createElement('a');
       link.href = URL.createObjectURL(blob);
-      link.setAttribute('download', `${calendarName}.vcs`);
+      link.setAttribute('download', `${calendarName} (${calendarYears.start}-${calendarYears.end}).vcs`);
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
